@@ -7,7 +7,7 @@ spring:
     allow-circular-references: true
 
   application:
-    name: lanchonete
+    name: framsnap-login
 
     # H2 configuration
     datasource:
@@ -48,9 +48,9 @@ aws:
     region: "us-east-1"
 
   credentials:
-    access-key: "ASIA2WJTGM7JZ5RHBKJH"
-    secret-key: "GbUWhVptJMlLQtCuyoHkP2Ot8SmA+VbEvOHAxaO+"
-    session-token: "IQoJb3JpZ2luX2VjEA0aCXVzLXdlc3QtMiJHMEUCIQCKb4G/SPZFihBNd74+CQRECCgEzOBUZ792K9dmMCTH2QIgWq98wapSNUOKCqkSELVps3BxbhLeccGdKWqoe7ELfxQqsQIIZhAAGgw3MzUwODM2NTMwNzUiDGHYSExcrmvEE+WTJCqOAuKZS4jYFh5rrUKCCEbC4IB9gZyiZRrg8fFFT22uTFruuQQai8p8aPgF2EjL4TZS4dzKrTAb8o5xe3bTeUy5PCcoaxMhn2zhTCg4HmWPcTZQmMKJCXXyshaA/k+CaDFpZZBmfbpjXj4EeECMA6vYJjn9wN7zklHSN/Fw22dxBt9QF/NdSFiLVBPuckyXoKDeoS19tVFbri9jeB3pTb5uZI1lMRg7tnxcuWoaa3dpgQwxRoC+ofGtHscFEEBVQXnanj1ZHb3sTvh9YeEJiMrY1T3KdF98ROMm9YaHPa7y+sC6raYOKaPjw81t/nQPtoPZWihnPDkeJltmVGsizS0837QQlHUNuVY312HVEflN1jCYr+e+BjqdAeSvY9DWoFGB/2IEBvKpS8NDKUxkyVC1BXn9vJrMZfmGlB+az+p5ymw4vnlKC2yCIIL8xu+4JtGEvLkksA9yuHEOF5/hqyCdKBZqK50OOR8LUdw8sHMSywCe/N4qrnld3bLQ9Elj5tCDYzTJ//f5aKIE3ecgNK5JlKI+qrAV5MEQMuuqjwoqiD3lXR/VHRheu4Bc9AiW6aYa70C0EtI="
+    access-key: "ASIA2WJTGM7JQ3MYHQ5K"
+    secret-key: "C9JlgzIPvpP6HOQgAcAV331yRSebaBOezjnysm4/"
+    session-token: "IQoJb3JpZ2luX2VjEDsaCXVzLXdlc3QtMiJHMEUCIQCcHV6V3H0ZepvKwA04qGI1bFF9akM87uDQdMq3I9zFMgIgV4ENyMk//veVNXAJB2gR/2xA5GvRzIwnQz0kikMUh4oqugIIlP//////////ARAAGgw3MzUwODM2NTMwNzUiDIm1qs+J9HJffH1GeSqOAt/3zg7lP1eYYRi6YTVUAsigENsd4h3B1kIF3vO1qhAHdq3GyoPi9PyXchUKXRk2jN/sbZkP1R55LPUEjvZDshZKXiyAi6eq/riAGiNJ7uBAwxC22cxN4/Es+auF5dy8Gbvi97IPv384ODUcEz0G1mpIHN82H060Xx5twgphoqaZciQQtDZCTbEQ6BaQv17z3jnC6QLoXRB7zEa1dCeLoF96F+ETKse3DmJwV1sXxlzHVrLrCzzoUn55n1s0/1GIIIusVqigp2zZ1t0kzX9GLOrHu112JDVVM6FkSALSv94UYMKCY3TtzaoztBtUnzATXrsIkW67qID1bcyjVeuiUUS7owm4++8WsTqBuqFPRzCKvPG+BjqdAc7ILv4hLKm8xtr9pYo+DNopzEx7s0T+3yBlqJsYEsn3GN5jjNfRjOt2RLJGH3sts3PoR5TRU8JpXL2hTR9i8T+hpZdRwff1sAe7WYutvjjm+maMUEclb/yfFfIhBvptOVGEhMXd01ZmU60B0sRqvaQRpjySmLYFrkcL1wIJFI3trbL2mFPPQxse77eklmsU1wqfO9SM0hoPltwiymw="
 
 # OpenAPI
 springdoc:
