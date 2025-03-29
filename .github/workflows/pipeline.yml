@@ -7,7 +7,7 @@ on:
 
 env:
   REGION_DEFAULT: us-east-1  
-  CLUSTER_NAME: EKS-fastfood
+  CLUSTER_NAME: EKS-FRAMESNAP
 
 jobs:
   unit-test:
@@ -51,7 +51,7 @@ jobs:
       - name: Run SonarQube analysis
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew sonar -Dsonar.projectKey=marceloebert_fiap-software-architecture-fastfood -Dsonar.organization=marceloebert
+        run: ./gradlew sonar -Dsonar.projectKey=marceloebert_FrameSnap-API-Login -Dsonar.organization=marceloebert
 
   build:
     runs-on: ubuntu-latest
@@ -82,11 +82,11 @@ jobs:
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
           AWS_REGION: ${{ secrets.AWS_REGION }}          
         run: |
-          docker build -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/fastfood-order-api:latest .      
+          docker build -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/api-framesnap-login:latest .      
 
       - name: Save Docker image as file
         run: |
-          docker save -o image.tar ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/fastfood-order-api:latest
+          docker save -o image.tar ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/api-framesnap-login:latest
 
       - name: Upload Docker image artifact
         uses: actions/upload-artifact@v4
@@ -126,7 +126,7 @@ jobs:
       
       - name: Push Docker image to ECR
         run: |
-          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/fastfood-order-api:latest
+          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/api-framesnap-login:latest
         
   update-eks:
     runs-on: ubuntu-latest
@@ -150,7 +150,7 @@ jobs:
 
       - name: Update Kubernetes Deployment
         run: |
-          kubectl set image deployment/api-pod c-api=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/fastfood-order-api:latest
-          kubectl scale deployment api-pod --replicas=0
-          kubectl scale deployment api-pod --replicas=2           
+          kubectl set image deployment/api-login-pod c-api=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/api-framesnap-login:latest
+          kubectl scale deployment api-login-pod --replicas=0
+          kubectl scale deployment api-login-pod --replicas=2           
           

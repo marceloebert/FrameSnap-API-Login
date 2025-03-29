@@ -2,13 +2,13 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: mysql
-  name: mysql-loadbalancer-svc
+    app: api-login-svc
+  name: api-loadbalancer-svc
 spec:
   ports:
-  - port: 3306
+  - port: 80
     protocol: TCP
-    targetPort: 3306
+    targetPort: 8080
   selector:
-    app: mysqldb-pod
+    app: api-login-pod
   type: LoadBalancer

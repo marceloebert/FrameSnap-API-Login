@@ -9,28 +9,6 @@ spring:
   application:
     name: framsnap-login
 
-    # H2 configuration
-    datasource:
-      #url: jdbc:h2:mem:lanchonetedb
-      url: ${MYSQL_URL}
-      username: ${MYSQL_USERNAME}
-      password: ${MYSQL_PASSWORD}
-      #driverClassName: org.h2.Driver
-      driverClassName: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME}
-   # h2:
-   #   console:
-   #     enabled: true
-   #     path: /h2-console
-    jpa:
-      hibernate:
-        ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO}
-        show-sql: true
-        #database-platform: org.hibernate.dialect.H2Dialect
-        database-platform: ${SPRING_JPA_DATABASE_PLATFORM}
-      properties:
-        hibernate:
-          format_sql: true
-
 management:
   endpoints:
     web:
@@ -42,15 +20,15 @@ management:
 
 aws:
   cognito:
-    client-id: "41vb4ljgmf4bhb8ogafjdjscst"
-    client-secret: "5qhg5sq91d2e68f6s3r13sht5kgar1co1lpd9b1eu01a5avdu9b"
-    user-pool-id: "us-east-1_Srf0ZBtbc"
-    region: "us-east-1"
+    client-id: ${COGNITO_CLIENT_ID}
+    client-secret: ${COGNITO_CLIENT_SECRET}
+    user-pool-id: ${COGNITO_USER_POOL_ID}
+    region: ${COGNITO_REGION}
 
   credentials:
-    access-key: "ASIA2WJTGM7JQ3MYHQ5K"
-    secret-key: "C9JlgzIPvpP6HOQgAcAV331yRSebaBOezjnysm4/"
-    session-token: "IQoJb3JpZ2luX2VjEDsaCXVzLXdlc3QtMiJHMEUCIQCcHV6V3H0ZepvKwA04qGI1bFF9akM87uDQdMq3I9zFMgIgV4ENyMk//veVNXAJB2gR/2xA5GvRzIwnQz0kikMUh4oqugIIlP//////////ARAAGgw3MzUwODM2NTMwNzUiDIm1qs+J9HJffH1GeSqOAt/3zg7lP1eYYRi6YTVUAsigENsd4h3B1kIF3vO1qhAHdq3GyoPi9PyXchUKXRk2jN/sbZkP1R55LPUEjvZDshZKXiyAi6eq/riAGiNJ7uBAwxC22cxN4/Es+auF5dy8Gbvi97IPv384ODUcEz0G1mpIHN82H060Xx5twgphoqaZciQQtDZCTbEQ6BaQv17z3jnC6QLoXRB7zEa1dCeLoF96F+ETKse3DmJwV1sXxlzHVrLrCzzoUn55n1s0/1GIIIusVqigp2zZ1t0kzX9GLOrHu112JDVVM6FkSALSv94UYMKCY3TtzaoztBtUnzATXrsIkW67qID1bcyjVeuiUUS7owm4++8WsTqBuqFPRzCKvPG+BjqdAc7ILv4hLKm8xtr9pYo+DNopzEx7s0T+3yBlqJsYEsn3GN5jjNfRjOt2RLJGH3sts3PoR5TRU8JpXL2hTR9i8T+hpZdRwff1sAe7WYutvjjm+maMUEclb/yfFfIhBvptOVGEhMXd01ZmU60B0sRqvaQRpjySmLYFrkcL1wIJFI3trbL2mFPPQxse77eklmsU1wqfO9SM0hoPltwiymw="
+    access-key: ${AWS_ACCESS_KEY_ID}
+    secret-key: ${AWS_SECRET_ACCESS_KEY}
+    session-token: ${AWS_SESSION_TOKEN}
 
 # OpenAPI
 springdoc:

@@ -1,57 +1,63 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: api-pod
+  name: api-login-pod
   labels:
-    app: api-pod
+    app: api-login-pod
 spec:
   template:
     metadata:
-      name: api-pod
+      name: api-login-pod
       labels:
-        app: api-pod
+        app: api-login-pod
     spec:
       containers:
         - name:  c-api
-          image: 183295443301.dkr.ecr.us-east-1.amazonaws.com/fiap-software-architecture-fastfood-app:latest
+          image: 735083653075.dkr.ecr.us-east-1.amazonaws.com/api-framesnap-login:latest
           ports:
             - containerPort: 3000
           env:
-            - name: SPRING_DATASOURCE_URL
+            - name: COGNITO_CLIENT_ID
               valueFrom:
                 configMapKeyRef:
-                  name: db-config
-                  key: MYSQL_URL
+                  name: login-config
+                  key: CLIENT-ID
 
-            - name: SPRING_DATASOURCE_USERNAME
+            - name: COGNITO_CLIENT_SECRET
               valueFrom:
                 configMapKeyRef:
-                  name: db-config
-                  key: MYSQL_USERNAME
+                  name: login-config
+                  key:  CLIENT-SECRET
 
-            - name: SPRING_DATASOURCE_PASSWORD
+            - name: COGNITO_USER_POOL_ID
               valueFrom:
                 configMapKeyRef:
-                  name: db-config
-                  key: MYSQL_PASSWORD
+                  name: login-config
+                  key: USER-POOL-ID
 
-            - name: SPRING_DATASOURCE_DRIVER-CLASS-NAME
+            - name: REGION
               valueFrom:
                 configMapKeyRef:
-                  name: db-config
-                  key: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+                  name: login-config
+                  key: us-east-1
 
-            - name: SPRING_JPA_HIBERNATE_DDL-AUTO
+            - name: AWS_ACCESS_KEY_ID
               valueFrom:
                 configMapKeyRef:
-                  name: db-config
-                  key: SPRING_JPA_HIBERNATE_DDL_AUTO
+                  name: login-config
+                  key: AWS_ACCESS_KEY_ID
 
-            - name: SPRING_JPA_DATABASE-PLATFORM
+            - name: AWS_SECRET_ACCESS_KEY
               valueFrom:
                 configMapKeyRef:
-                  name: db-config
-                  key: SPRING_JPA_DATABASE_PLATFORM
+                  name: login-config
+                  key: AWS_SECRET_ACCESS_KEY
+
+            - name: AWS_SESSION_TOKEN
+              valueFrom:
+                configMapKeyRef:
+                  name: login-config
+                  key: AWS_SESSION_TOKEN
 
           livenessProbe:
             httpGet:
@@ -73,4 +79,4 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: api-pod
+      app: api-login-pod
