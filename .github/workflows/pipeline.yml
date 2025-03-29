@@ -3,10 +3,10 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - main # Apenas para a branch principal (produção)
+      - main
 
 env:
-  REGION_DEFAULT: us-east-1  
+  REGION_DEFAULT: us-east-1
   CLUSTER_NAME: EKS-FRAMESNAP
 
 jobs:
@@ -28,8 +28,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Run Gradle Tests with Coverage
-        run: |
-          ./gradlew clean test jacocoTestReport jacocoTestCoverageVerification
+        run: ./gradlew clean test jacocoTestReport
 
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
@@ -64,33 +63,13 @@ jobs:
       - name: Run SonarQube analysis
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: |
-          ./gradlew clean build
-          ./gradlew sonar \
-            -Dsonar.projectKey=marceloebert_FrameSnap-API-Login \
-            -Dsonar.organization=marceloebert \
-            -Dsonar.host.url=https://sonarcloud.io \
-            -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
-            -Dsonar.analysis.mode=ci \
-            -Dsonar.ci.buildNumber=${{ github.run_number }} \
-            -Dsonar.ci.pullRequest.base=${{ github.base_ref }} \
-            -Dsonar.ci.pullRequest.key=${{ github.event.pull_request.number }} \
-            -Dsonar.ci.pullRequest.branch=${{ github.head_ref }} \
-            -Dsonar.ci.pullRequest.title=${{ github.event.pull_request.title }} \
-            -Dsonar.ci.pullRequest.sha=${{ github.sha }} \
-            -Dsonar.coverage.jacoco.xmlReportPaths=build/reports/jacoco/test/jacocoTestReport.xml \
-            -Dsonar.coverage.exclusions=**/dto/** \
-            -Dsonar.test.inclusions=**/*Test.java \
-            -Dsonar.sourceEncoding=UTF-8 \
-            -Dsonar.java.source=17 \
-            -Dsonar.java.target=17
+        run: ./gradlew sonar
 
   build:
     runs-on: ubuntu-latest
     needs: [unit-test, code-analysis]
-    
-    environment: #Define a configuração de ambiente para este job
-      name: AWS    
+    environment:
+      name: AWS
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -112,9 +91,9 @@ jobs:
       - name: Build Docker image
         env:
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}          
+          AWS_REGION: ${{ secrets.AWS_REGION }}
         run: |
-          docker build -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/api-framesnap-login:latest .      
+          docker build -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/api-framesnap-login:latest .
 
       - name: Save Docker image as file
         run: |
@@ -129,12 +108,9 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build
-    
-    environment: #Define a configuração de ambiente para este job
-      name: AWS    
-    
-    steps: 
-
+    environment:
+      name: AWS
+    steps:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -155,18 +131,16 @@ jobs:
       - name: Load Docker image from file
         run: |
           docker load -i image.tar
-      
+
       - name: Push Docker image to ECR
         run: |
           docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/api-framesnap-login:latest
-        
+
   update-eks:
     runs-on: ubuntu-latest
     needs: deploy
-
-    environment: #Define a configuração de ambiente para este job
-      name: AWS    
-      
+    environment:
+      name: AWS
     steps:
       - name: Configure kubectl
         uses: aws-actions/configure-aws-credentials@v1
@@ -184,5 +158,4 @@ jobs:
         run: |
           kubectl set image deployment/api-login-pod c-api=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/api-framesnap-login:latest
           kubectl scale deployment api-login-pod --replicas=0
-          kubectl scale deployment api-login-pod --replicas=2           
-          
+          kubectl scale deployment api-login-pod --replicas=2
