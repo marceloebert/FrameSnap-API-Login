@@ -46,8 +46,9 @@ class RegisterUserUseCaseTest {
         assertEquals(expectedId, result.getId());
         assertEquals(email, result.getEmail());
         assertEquals(password, result.getPassword());
-        verify(userGateway).findByEmail(email);
-        verify(userGateway).register(any(User.class));
+        verify(userGateway, times(1)).findByEmail(email);
+        verify(userGateway, times(1)).register(any(User.class));
+        verifyNoMoreInteractions(userGateway);
     }
 
     @Test
@@ -62,7 +63,8 @@ class RegisterUserUseCaseTest {
         // Act & Assert
         RuntimeException exception = assertThrows(RuntimeException.class, () -> registerUserUseCase.register(email, password));
         assertEquals("Usuário já existe", exception.getMessage());
-        verify(userGateway).findByEmail(email);
+        verify(userGateway, times(1)).findByEmail(email);
         verify(userGateway, never()).register(any(User.class));
+        verifyNoMoreInteractions(userGateway);
     }
 } 

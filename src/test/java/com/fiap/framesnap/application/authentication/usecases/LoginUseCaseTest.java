@@ -48,8 +48,9 @@ class LoginUseCaseTest {
         // Assert
         assertNotNull(result);
         assertEquals(expectedToken, result);
-        verify(userGateway).findByEmail(email);
-        verify(tokenGateway).generateToken(email, password);
+        verify(userGateway, times(1)).findByEmail(email);
+        verify(tokenGateway, times(1)).generateToken(email, password);
+        verifyNoMoreInteractions(userGateway, tokenGateway);
     }
 
     @Test
@@ -63,7 +64,8 @@ class LoginUseCaseTest {
         // Act & Assert
         RuntimeException exception = assertThrows(RuntimeException.class, () -> loginUseCase.execute(email, password));
         assertEquals("Usuário não encontrado", exception.getMessage());
-        verify(userGateway).findByEmail(email);
+        verify(userGateway, times(1)).findByEmail(email);
         verify(tokenGateway, never()).generateToken(any(), any());
+        verifyNoMoreInteractions(userGateway, tokenGateway);
     }
 } 

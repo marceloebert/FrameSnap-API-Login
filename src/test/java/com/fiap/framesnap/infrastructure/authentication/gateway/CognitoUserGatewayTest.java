@@ -13,6 +13,8 @@ import software.amazon.awssdk.services.cognitoidentityprovider.model.*;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -46,9 +48,26 @@ class CognitoUserGatewayTest {
         
         User user = new User(null, email, password);
         
+        Map<String, String> attributes = new HashMap<>();
+        attributes.put("email", email);
+        
+        AdminCreateUserRequest createUserRequest = AdminCreateUserRequest.builder()
+            .userPoolId("test-pool-id")
+            .username(email)
+            .temporaryPassword(password)
+            .userAttributes(AttributeType.builder()
+                .name("email")
+                .value(email)
+                .build())
+            .build();
+            
         AdminCreateUserResponse createUserResponse = AdminCreateUserResponse.builder()
-            .user(software.amazon.awssdk.services.cognitoidentityprovider.model.UserType.builder()
+            .user(UserType.builder()
                 .username(userId)
+                .attributes(AttributeType.builder()
+                    .name("email")
+                    .value(email)
+                    .build())
                 .build())
             .build();
             
@@ -72,8 +91,13 @@ class CognitoUserGatewayTest {
         String email = "test@example.com";
         String userId = UUID.randomUUID().toString();
         
+        ListUsersRequest listUsersRequest = ListUsersRequest.builder()
+            .userPoolId("test-pool-id")
+            .filter("email = \"" + email + "\"")
+            .build();
+            
         ListUsersResponse listUsersResponse = ListUsersResponse.builder()
-            .users(Collections.singletonList(software.amazon.awssdk.services.cognitoidentityprovider.model.UserType.builder()
+            .users(Collections.singletonList(UserType.builder()
                 .username(userId)
                 .attributes(AttributeType.builder()
                     .name("email")
@@ -101,6 +125,11 @@ class CognitoUserGatewayTest {
         // Arrange
         String email = "nonexistent@example.com";
         
+        ListUsersRequest listUsersRequest = ListUsersRequest.builder()
+            .userPoolId("test-pool-id")
+            .filter("email = \"" + email + "\"")
+            .build();
+            
         ListUsersResponse listUsersResponse = ListUsersResponse.builder()
             .users(Collections.emptyList())
             .build();
@@ -123,6 +152,16 @@ class CognitoUserGatewayTest {
         String password = "password123";
         String expectedToken = "jwt-token";
         
+        AdminInitiateAuthRequest authRequest = AdminInitiateAuthRequest.builder()
+            .userPoolId("test-pool-id")
+            .clientId("test-client-id")
+            .authFlow(AuthFlowType.ADMIN_NO_SRP_AUTH)
+            .authParameters(Map.of(
+                "USERNAME", email,
+                "SECRET_HASH", "test-client-secret"
+            ))
+            .build();
+            
         AdminInitiateAuthResponse authResponse = AdminInitiateAuthResponse.builder()
             .authenticationResult(AuthenticationResultType.builder()
                 .accessToken(expectedToken)
