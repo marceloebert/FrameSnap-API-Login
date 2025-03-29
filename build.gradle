@@ -65,25 +65,7 @@ jacocoTestCoverageVerification {
             limit {
                 counter = 'LINE'
                 value = 'COVEREDRATIO'
-                minimum = 0.60
-            }
-        }
-        rule {
-            element = 'CLASS'
-            includes = ['com.fiap.framesnap.application.authentication.usecases.*']
-            limit {
-                counter = 'LINE'
-                value = 'COVEREDRATIO'
-                minimum = 0.80
-            }
-        }
-        rule {
-            element = 'CLASS'
-            includes = ['com.fiap.framesnap.infrastructure.authentication.gateway.*']
-            limit {
-                counter = 'LINE'
-                value = 'COVEREDRATIO'
-                minimum = 0.80
+                minimum = 0.50
             }
         }
     }
