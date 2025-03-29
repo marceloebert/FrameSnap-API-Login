@@ -63,7 +63,7 @@ jobs:
       - name: Run SonarQube analysis
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew sonar
+        run: ./gradlew sonar -Dsonar.projectKey=marceloebert_FrameSnap-API-Login -Dsonar.organization=marceloebert
 
   build:
     runs-on: ubuntu-latest
