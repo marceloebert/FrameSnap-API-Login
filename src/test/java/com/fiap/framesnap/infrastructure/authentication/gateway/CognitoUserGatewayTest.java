@@ -15,6 +15,7 @@ import java.util.UUID;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -48,41 +49,26 @@ class CognitoUserGatewayTest {
         
         User user = new User(null, email, password);
         
-        Map<String, String> attributes = new HashMap<>();
-        attributes.put("email", email);
-        
-        AdminCreateUserRequest createUserRequest = AdminCreateUserRequest.builder()
-            .userPoolId("test-pool-id")
-            .username(email)
-            .temporaryPassword(password)
-            .userAttributes(AttributeType.builder()
-                .name("email")
-                .value(email)
-                .build())
+        SignUpResponse signUpResponse = SignUpResponse.builder()
+            .userSub(userId)
             .build();
             
-        AdminCreateUserResponse createUserResponse = AdminCreateUserResponse.builder()
-            .user(UserType.builder()
-                .username(userId)
-                .attributes(AttributeType.builder()
-                    .name("email")
-                    .value(email)
-                    .build())
-                .build())
-            .build();
+        when(cognitoClient.signUp(any(SignUpRequest.class)))
+            .thenReturn(signUpResponse);
             
-        when(cognitoClient.adminCreateUser(any(AdminCreateUserRequest.class)))
-            .thenReturn(createUserResponse);
+        when(cognitoClient.adminConfirmSignUp(any(AdminConfirmSignUpRequest.class)))
+            .thenReturn(AdminConfirmSignUpResponse.builder().build());
 
         // Act
         User result = cognitoUserGateway.register(user);
 
         // Assert
         assertNotNull(result);
-        assertEquals(userId, result.getId());
+        assertEquals(userId, result.getId().toString());
         assertEquals(email, result.getEmail());
         assertEquals(password, result.getPassword());
-        verify(cognitoClient).adminCreateUser(any(AdminCreateUserRequest.class));
+        verify(cognitoClient).signUp(any(SignUpRequest.class));
+        verify(cognitoClient).adminConfirmSignUp(any(AdminConfirmSignUpRequest.class));
     }
 
     @Test
@@ -91,19 +77,18 @@ class CognitoUserGatewayTest {
         String email = "test@example.com";
         String userId = UUID.randomUUID().toString();
         
-        ListUsersRequest listUsersRequest = ListUsersRequest.builder()
-            .userPoolId("test-pool-id")
-            .filter("email = \"" + email + "\"")
+        AttributeType emailAttribute = AttributeType.builder()
+            .name("email")
+            .value(email)
+            .build();
+            
+        UserType cognitoUser = UserType.builder()
+            .username(userId)
+            .attributes(Collections.singletonList(emailAttribute))
             .build();
             
         ListUsersResponse listUsersResponse = ListUsersResponse.builder()
-            .users(Collections.singletonList(UserType.builder()
-                .username(userId)
-                .attributes(AttributeType.builder()
-                    .name("email")
-                    .value(email)
-                    .build())
-                .build()))
+            .users(Collections.singletonList(cognitoUser))
             .build();
             
         when(cognitoClient.listUsers(any(ListUsersRequest.class)))
@@ -115,7 +100,7 @@ class CognitoUserGatewayTest {
         // Assert
         assertTrue(result.isPresent());
         User user = result.get();
-        assertEquals(userId, user.getId());
+        assertEquals(userId, user.getId().toString());
         assertEquals(email, user.getEmail());
         verify(cognitoClient).listUsers(any(ListUsersRequest.class));
     }
@@ -125,11 +110,6 @@ class CognitoUserGatewayTest {
         // Arrange
         String email = "nonexistent@example.com";
         
-        ListUsersRequest listUsersRequest = ListUsersRequest.builder()
-            .userPoolId("test-pool-id")
-            .filter("email = \"" + email + "\"")
-            .build();
-            
         ListUsersResponse listUsersResponse = ListUsersResponse.builder()
             .users(Collections.emptyList())
             .build();
@@ -152,23 +132,26 @@ class CognitoUserGatewayTest {
         String password = "password123";
         String expectedToken = "jwt-token";
         
-        AdminInitiateAuthRequest authRequest = AdminInitiateAuthRequest.builder()
-            .userPoolId("test-pool-id")
+        Map<String, String> authParams = new HashMap<>();
+        authParams.put("USERNAME", email);
+        authParams.put("PASSWORD", password);
+        authParams.put("SECRET_HASH", "test-client-secret");
+        
+        InitiateAuthRequest authRequest = InitiateAuthRequest.builder()
             .clientId("test-client-id")
-            .authFlow(AuthFlowType.ADMIN_NO_SRP_AUTH)
-            .authParameters(Map.of(
-                "USERNAME", email,
-                "SECRET_HASH", "test-client-secret"
-            ))
+            .authFlow(AuthFlowType.USER_PASSWORD_AUTH)
+            .authParameters(authParams)
             .build();
             
-        AdminInitiateAuthResponse authResponse = AdminInitiateAuthResponse.builder()
-            .authenticationResult(AuthenticationResultType.builder()
-                .accessToken(expectedToken)
-                .build())
+        AuthenticationResultType authResult = AuthenticationResultType.builder()
+            .idToken(expectedToken)
             .build();
             
-        when(cognitoClient.adminInitiateAuth(any(AdminInitiateAuthRequest.class)))
+        InitiateAuthResponse authResponse = InitiateAuthResponse.builder()
+            .authenticationResult(authResult)
+            .build();
+            
+        when(cognitoClient.initiateAuth(any(InitiateAuthRequest.class)))
             .thenReturn(authResponse);
 
         // Act
@@ -177,6 +160,6 @@ class CognitoUserGatewayTest {
         // Assert
         assertNotNull(result);
         assertEquals(expectedToken, result);
-        verify(cognitoClient).adminInitiateAuth(any(AdminInitiateAuthRequest.class));
+        verify(cognitoClient).initiateAuth(any(InitiateAuthRequest.class));
     }
 } 
