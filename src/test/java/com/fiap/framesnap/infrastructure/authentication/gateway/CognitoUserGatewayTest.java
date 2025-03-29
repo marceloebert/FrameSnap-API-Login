@@ -31,6 +31,9 @@ class CognitoUserGatewayTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        when(cognitoProperties.getUserPoolId()).thenReturn("test-pool-id");
+        when(cognitoProperties.getClientId()).thenReturn("test-client-id");
+        when(cognitoProperties.getClientSecret()).thenReturn("test-client-secret");
         cognitoUserGateway = new CognitoUserGateway(cognitoClient, cognitoProperties);
     }
 
@@ -49,9 +52,6 @@ class CognitoUserGatewayTest {
                 .build())
             .build();
             
-        when(cognitoProperties.getUserPoolId()).thenReturn("userPoolId");
-        when(cognitoProperties.getClientId()).thenReturn("clientId");
-        when(cognitoProperties.getClientSecret()).thenReturn("clientSecret");
         when(cognitoClient.adminCreateUser(any(AdminCreateUserRequest.class)))
             .thenReturn(createUserResponse);
 
@@ -82,7 +82,6 @@ class CognitoUserGatewayTest {
                 .build()))
             .build();
             
-        when(cognitoProperties.getUserPoolId()).thenReturn("userPoolId");
         when(cognitoClient.listUsers(any(ListUsersRequest.class)))
             .thenReturn(listUsersResponse);
 
@@ -106,7 +105,6 @@ class CognitoUserGatewayTest {
             .users(Collections.emptyList())
             .build();
             
-        when(cognitoProperties.getUserPoolId()).thenReturn("userPoolId");
         when(cognitoClient.listUsers(any(ListUsersRequest.class)))
             .thenReturn(listUsersResponse);
 
@@ -131,9 +129,6 @@ class CognitoUserGatewayTest {
                 .build())
             .build();
             
-        when(cognitoProperties.getUserPoolId()).thenReturn("userPoolId");
-        when(cognitoProperties.getClientId()).thenReturn("clientId");
-        when(cognitoProperties.getClientSecret()).thenReturn("clientSecret");
         when(cognitoClient.adminInitiateAuth(any(AdminInitiateAuthRequest.class)))
             .thenReturn(authResponse);
 

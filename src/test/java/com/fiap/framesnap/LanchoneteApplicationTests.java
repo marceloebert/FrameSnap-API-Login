@@ -11,7 +11,6 @@ import com.fiap.framesnap.infrastructure.authentication.controller.dto.UserRespo
 import com.fiap.framesnap.infrastructure.authentication.controller.dto.LoginResponse;
 import com.fiap.framesnap.entities.authentication.User;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -19,7 +18,6 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
 class LanchoneteApplicationTests {
 
     @Test
