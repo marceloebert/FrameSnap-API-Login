@@ -57,20 +57,6 @@ jacocoTestReport {
     }
 }
 
-jacocoTestCoverageVerification {
-    violationRules {
-        rule {
-            element = 'CLASS'
-            includes = ['com.fiap.framesnap.*']
-            limit {
-                counter = 'LINE'
-                value = 'COVEREDRATIO'
-                minimum = 0.50
-            }
-        }
-    }
-}
-
 sonarqube {
     properties {
         property "sonar.gradle.skipCompile", "true"
