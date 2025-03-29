@@ -60,7 +60,8 @@ class RegisterUserUseCaseTest {
         when(userGateway.findByEmail(email)).thenReturn(Optional.of(existingUser));
 
         // Act & Assert
-        assertThrows(RuntimeException.class, () -> registerUserUseCase.register(email, password));
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> registerUserUseCase.register(email, password));
+        assertEquals("Usuário já existe", exception.getMessage());
         verify(userGateway).findByEmail(email);
         verify(userGateway, never()).register(any(User.class));
     }
