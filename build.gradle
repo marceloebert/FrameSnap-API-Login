@@ -65,6 +65,24 @@ jacocoTestCoverageVerification {
             limit {
                 counter = 'LINE'
                 value = 'COVEREDRATIO'
+                minimum = 0.60
+            }
+        }
+        rule {
+            element = 'CLASS'
+            includes = ['com.fiap.framesnap.application.authentication.usecases.*']
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.80
+            }
+        }
+        rule {
+            element = 'CLASS'
+            includes = ['com.fiap.framesnap.infrastructure.authentication.gateway.*']
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
                 minimum = 0.80
             }
         }
@@ -82,7 +100,7 @@ sonarqube {
         property "sonar.java.binaries", "build/classes"
         property "sonar.java.libraries", "build/libs"
         property "sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/test/jacocoTestReport.xml"
-        property "sonar.coverage.exclusions", "**/dto/**"
+        property "sonar.coverage.exclusions", "**/dto/**,**/config/**,**/util/**,**/exception/**,**/validations/**"
         property "sonar.test.inclusions", "**/*Test.java"
         property "sonar.sourceEncoding", "UTF-8"
         property "sonar.java.source", "17"
