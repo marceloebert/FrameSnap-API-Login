@@ -13,6 +13,9 @@ public class LoginUseCase {
     }
 
     public String execute(String email, String password) {
+        if (userGateway.findByEmail(email).isEmpty()) {
+            throw new RuntimeException("Usuário não encontrado");
+        }
         return tokenGateway.generateToken(email, password);
     }
 }

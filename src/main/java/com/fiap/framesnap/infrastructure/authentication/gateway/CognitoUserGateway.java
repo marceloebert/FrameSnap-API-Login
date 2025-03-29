@@ -10,8 +10,6 @@ import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityPr
 import software.amazon.awssdk.services.cognitoidentityprovider.model.*;
 import java.util.Map;
 import java.util.HashMap;
-
-
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -58,8 +56,8 @@ public class CognitoUserGateway implements UserGateway {
 
         // Confirmando o usuário automaticamente
         cognitoClient.adminConfirmSignUp(AdminConfirmSignUpRequest.builder()
-                .userPoolId(cognitoProperties.getUserPoolId()) // ID do User Pool
-                .username(user.getEmail()) // E-mail do usuário
+                .userPoolId(cognitoProperties.getUserPoolId())
+                .username(user.getEmail())
                 .build());
 
         // Retorna um novo usuário com o ID gerado pelo Cognito
@@ -68,32 +66,51 @@ public class CognitoUserGateway implements UserGateway {
 
     @Override
     public Optional<User> findByEmail(String email) {
-        return Optional.empty(); // Implementação futura para busca de usuário no Cognito
+        ListUsersRequest listUsersRequest = ListUsersRequest.builder()
+                .userPoolId(cognitoProperties.getUserPoolId())
+                .filter("email = \"" + email + "\"")
+                .build();
+
+        ListUsersResponse response = cognitoClient.listUsers(listUsersRequest);
+        
+        if (response.users().isEmpty()) {
+            return Optional.empty();
+        }
+
+        UserType cognitoUser = response.users().get(0);
+        String userId = cognitoUser.username();
+        String userEmail = cognitoUser.attributes().stream()
+                .filter(attr -> attr.name().equals("email"))
+                .findFirst()
+                .map(AttributeType::value)
+                .orElse(email);
+
+        return Optional.of(new User(UUID.fromString(userId), userEmail, ""));
     }
 
     @Override
     public String login(String email, String password) {
-        // ✅ Gerando o SECRET_HASH corretamente
+        // Gerando o SECRET_HASH corretamente
         String secretHash = CognitoSecretHashGenerator.calculateSecretHash(
                 cognitoProperties.getClientId(),
                 cognitoProperties.getClientSecret(),
                 email
         );
 
-        // ✅ Criando os parâmetros de autenticação
+        // Criando os parâmetros de autenticação
         Map<String, String> authParams = new HashMap<>();
         authParams.put("USERNAME", email);
         authParams.put("PASSWORD", password);
         authParams.put("SECRET_HASH", secretHash);
 
-        // ✅ Criando a requisição para autenticação
+        // Criando a requisição para autenticação
         InitiateAuthRequest authRequest = InitiateAuthRequest.builder()
                 .clientId(cognitoProperties.getClientId())
                 .authFlow(AuthFlowType.USER_PASSWORD_AUTH)
                 .authParameters(authParams)
                 .build();
 
-        // ✅ Enviando a requisição para o Cognito
+        // Enviando a requisição para o Cognito
         InitiateAuthResponse authResponse = cognitoClient.initiateAuth(authRequest);
         return authResponse.authenticationResult().idToken();
     }

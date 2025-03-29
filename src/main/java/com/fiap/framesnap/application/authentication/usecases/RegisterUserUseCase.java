@@ -13,6 +13,9 @@ public class RegisterUserUseCase {
     }
 
     public User register(String email, String passwordHash) {
+        if (userGateway.findByEmail(email).isPresent()) {
+            throw new RuntimeException("Usuário já existe");
+        }
         User newUser = new User(UUID.randomUUID(), email, passwordHash);
         return userGateway.register(newUser);
     }
