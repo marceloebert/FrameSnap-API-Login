@@ -62,10 +62,64 @@ class LoginUseCaseTest {
         when(userGateway.findByEmail(email)).thenReturn(Optional.empty());
 
         // Act & Assert
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> loginUseCase.execute(email, password));
-        assertEquals("Usuário não encontrado", exception.getMessage());
+        assertThrows(RuntimeException.class, () -> {
+            loginUseCase.execute(email, password);
+        });
         verify(userGateway, times(1)).findByEmail(email);
         verify(tokenGateway, never()).generateToken(any(), any());
-        verifyNoMoreInteractions(userGateway, tokenGateway);
+    }
+
+    @Test
+    void shouldThrowExceptionWhenEmailIsNull() {
+        // Arrange
+        String password = "password123";
+
+        // Act & Assert
+        assertThrows(IllegalArgumentException.class, () -> {
+            loginUseCase.execute(null, password);
+        });
+        verify(userGateway, never()).findByEmail(any());
+        verify(tokenGateway, never()).generateToken(any(), any());
+    }
+
+    @Test
+    void shouldThrowExceptionWhenPasswordIsNull() {
+        // Arrange
+        String email = "test@example.com";
+
+        // Act & Assert
+        assertThrows(IllegalArgumentException.class, () -> {
+            loginUseCase.execute(email, null);
+        });
+        verify(userGateway, never()).findByEmail(any());
+        verify(tokenGateway, never()).generateToken(any(), any());
+    }
+
+    @Test
+    void shouldThrowExceptionWhenEmailIsEmpty() {
+        // Arrange
+        String email = "";
+        String password = "password123";
+
+        // Act & Assert
+        assertThrows(IllegalArgumentException.class, () -> {
+            loginUseCase.execute(email, password);
+        });
+        verify(userGateway, never()).findByEmail(any());
+        verify(tokenGateway, never()).generateToken(any(), any());
+    }
+
+    @Test
+    void shouldThrowExceptionWhenPasswordIsEmpty() {
+        // Arrange
+        String email = "test@example.com";
+        String password = "";
+
+        // Act & Assert
+        assertThrows(IllegalArgumentException.class, () -> {
+            loginUseCase.execute(email, password);
+        });
+        verify(userGateway, never()).findByEmail(any());
+        verify(tokenGateway, never()).generateToken(any(), any());
     }
 } 

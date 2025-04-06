@@ -1,14 +1,17 @@
 package com.fiap.framesnap.infrastructure.helthcheck.controller;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class HealthCheckApiTest {
 
-    private final HealthCheckApi healthCheckApi = new HealthCheckApi();
+    private HealthCheckApi healthCheckApi;
+
+    @BeforeEach
+    void setUp() {
+        healthCheckApi = new HealthCheckApi();
+    }
 
     @Test
     void shouldReturnOkForHealthCheck() {
@@ -16,6 +19,7 @@ class HealthCheckApiTest {
         String response = healthCheckApi.healthCheck();
 
         // Assert
+        assertNotNull(response);
         assertEquals("OK", response);
     }
 } 

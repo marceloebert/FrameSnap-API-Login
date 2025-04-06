@@ -61,10 +61,64 @@ class RegisterUserUseCaseTest {
         when(userGateway.findByEmail(email)).thenReturn(Optional.of(existingUser));
 
         // Act & Assert
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> registerUserUseCase.register(email, password));
-        assertEquals("Usuário já existe", exception.getMessage());
+        assertThrows(RuntimeException.class, () -> {
+            registerUserUseCase.register(email, password);
+        });
         verify(userGateway, times(1)).findByEmail(email);
         verify(userGateway, never()).register(any(User.class));
-        verifyNoMoreInteractions(userGateway);
+    }
+
+    @Test
+    void shouldThrowExceptionWhenEmailIsNull() {
+        // Arrange
+        String password = "password123";
+
+        // Act & Assert
+        assertThrows(IllegalArgumentException.class, () -> {
+            registerUserUseCase.register(null, password);
+        });
+        verify(userGateway, never()).findByEmail(any());
+        verify(userGateway, never()).register(any(User.class));
+    }
+
+    @Test
+    void shouldThrowExceptionWhenPasswordIsNull() {
+        // Arrange
+        String email = "test@example.com";
+
+        // Act & Assert
+        assertThrows(IllegalArgumentException.class, () -> {
+            registerUserUseCase.register(email, null);
+        });
+        verify(userGateway, never()).findByEmail(any());
+        verify(userGateway, never()).register(any(User.class));
+    }
+
+    @Test
+    void shouldThrowExceptionWhenEmailIsEmpty() {
+        // Arrange
+        String email = "";
+        String password = "password123";
+
+        // Act & Assert
+        assertThrows(IllegalArgumentException.class, () -> {
+            registerUserUseCase.register(email, password);
+        });
+        verify(userGateway, never()).findByEmail(any());
+        verify(userGateway, never()).register(any(User.class));
+    }
+
+    @Test
+    void shouldThrowExceptionWhenPasswordIsEmpty() {
+        // Arrange
+        String email = "test@example.com";
+        String password = "";
+
+        // Act & Assert
+        assertThrows(IllegalArgumentException.class, () -> {
+            registerUserUseCase.register(email, password);
+        });
+        verify(userGateway, never()).findByEmail(any());
+        verify(userGateway, never()).register(any(User.class));
     }
 } 

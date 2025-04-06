@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import com.fiap.framesnap.application.authentication.gateways.TokenGateway;
 import com.fiap.framesnap.crosscutting.util.HashUtil;
 
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,29 +29,31 @@ public class TokenGatewayImpl implements TokenGateway {
 
     @Override
     public String generateToken(String email, String password) {
-        Map<String, String> authParams = new HashMap<>();
-        authParams.put("USERNAME", email);
-        authParams.put("PASSWORD", password);
-        authParams.put("SECRET_HASH", calculateSecretHash(email));
+        try {
+            Map<String, String> authParams = new HashMap<>();
+            authParams.put("USERNAME", email);
+            authParams.put("PASSWORD", password);
+            authParams.put("SECRET_HASH", calculateSecretHash(email));
 
-        InitiateAuthRequest authRequest = InitiateAuthRequest.builder()
-                .clientId(clientId)
-                .authFlow(AuthFlowType.USER_PASSWORD_AUTH)
-                .authParameters(authParams)
-                .build();
+            InitiateAuthRequest authRequest = InitiateAuthRequest.builder()
+                    .clientId(clientId)
+                    .authFlow(AuthFlowType.USER_PASSWORD_AUTH)
+                    .authParameters(authParams)
+                    .build();
 
-        InitiateAuthResponse authResponse = cognitoClient.initiateAuth(authRequest);
-        return authResponse.authenticationResult().idToken(); // Retorna o ID token
+            InitiateAuthResponse authResponse = cognitoClient.initiateAuth(authRequest);
+            return authResponse.authenticationResult().idToken();
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao gerar token: " + e.getMessage(), e);
+        }
     }
 
     private String calculateSecretHash(String username) {
-        // Aqui colocamos a mesma lógica de hash que usamos no registro
         return HashUtil.calculateSecretHash(clientId, clientSecret, username);
     }
 
     @Override
     public boolean validateToken(String token) {
-        // Adapte esta lógica conforme necessário para validar o token
         return token != null && !token.trim().isEmpty();
     }
 }

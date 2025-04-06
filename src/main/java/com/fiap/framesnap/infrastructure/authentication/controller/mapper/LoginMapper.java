@@ -4,6 +4,9 @@ import com.fiap.framesnap.infrastructure.authentication.controller.dto.LoginResp
 
 public class LoginMapper {
     public static LoginResponse toResponse(String token) {
+        if (token == null) {
+            return null;
+        }
         return new LoginResponse(token);
     }
 }

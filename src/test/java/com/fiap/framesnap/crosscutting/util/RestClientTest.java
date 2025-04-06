@@ -147,4 +147,93 @@ class RestClientTest {
             eq(Void.class)
         );
     }
+
+    @Test
+    void shouldHandleNullHeaders() {
+        // Arrange
+        String url = "http://test.com/api";
+        Object request = new Object();
+        
+        ResponseEntity<String> expectedResponse = new ResponseEntity<>("success", HttpStatus.OK);
+        when(restTemplate.exchange(
+            eq(url),
+            eq(HttpMethod.POST),
+            any(HttpEntity.class),
+            eq(String.class)
+        )).thenReturn(expectedResponse);
+
+        // Act
+        ResponseEntity<String> response = restClient.post(url, request, String.class, null);
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("success", response.getBody());
+        verify(restTemplate).exchange(
+            eq(url),
+            eq(HttpMethod.POST),
+            any(HttpEntity.class),
+            eq(String.class)
+        );
+    }
+
+    @Test
+    void shouldHandleEmptyHeaders() {
+        // Arrange
+        String url = "http://test.com/api";
+        Object request = new Object();
+        Map<String, String> headers = new HashMap<>();
+        
+        ResponseEntity<String> expectedResponse = new ResponseEntity<>("success", HttpStatus.OK);
+        when(restTemplate.exchange(
+            eq(url),
+            eq(HttpMethod.POST),
+            any(HttpEntity.class),
+            eq(String.class)
+        )).thenReturn(expectedResponse);
+
+        // Act
+        ResponseEntity<String> response = restClient.post(url, request, String.class, headers);
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("success", response.getBody());
+        verify(restTemplate).exchange(
+            eq(url),
+            eq(HttpMethod.POST),
+            any(HttpEntity.class),
+            eq(String.class)
+        );
+    }
+
+    @Test
+    void shouldHandleNullRequest() {
+        // Arrange
+        String url = "http://test.com/api";
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Authorization", "Bearer token");
+        
+        ResponseEntity<String> expectedResponse = new ResponseEntity<>("success", HttpStatus.OK);
+        when(restTemplate.exchange(
+            eq(url),
+            eq(HttpMethod.POST),
+            any(HttpEntity.class),
+            eq(String.class)
+        )).thenReturn(expectedResponse);
+
+        // Act
+        ResponseEntity<String> response = restClient.post(url, null, String.class, headers);
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("success", response.getBody());
+        verify(restTemplate).exchange(
+            eq(url),
+            eq(HttpMethod.POST),
+            any(HttpEntity.class),
+            eq(String.class)
+        );
+    }
 } 
