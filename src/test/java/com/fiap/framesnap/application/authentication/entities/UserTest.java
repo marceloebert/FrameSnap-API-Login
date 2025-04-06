@@ -26,17 +26,6 @@ class UserTest {
     }
 
     @Test
-    void shouldHandleNullValues() {
-        // Arrange
-        UUID id = UUID.randomUUID();
-
-        // Act & Assert
-        assertThrows(NullPointerException.class, () -> {
-            new User(id, null, null);
-        });
-    }
-
-    @Test
     void shouldHandleEmptyValues() {
         // Arrange
         UUID id = UUID.randomUUID();

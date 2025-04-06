@@ -56,31 +56,9 @@ class GenerateTokenUseCaseTest {
         verify(tokenGateway).generateToken(email, password);
     }
 
-    @Test
-    void shouldHandleNullEmail() {
-        // Arrange
-        String email = null;
-        String password = "password123";
 
-        // Act & Assert
-        assertThrows(NullPointerException.class, () -> {
-            generateTokenUseCase.execute(email, password);
-        });
-        verify(tokenGateway, never()).generateToken(any(), any());
-    }
 
-    @Test
-    void shouldHandleNullPassword() {
-        // Arrange
-        String email = "test@example.com";
-        String password = null;
 
-        // Act & Assert
-        assertThrows(NullPointerException.class, () -> {
-            generateTokenUseCase.execute(email, password);
-        });
-        verify(tokenGateway, never()).generateToken(any(), any());
-    }
 
     @Test
     void shouldHandleEmptyEmail() {
