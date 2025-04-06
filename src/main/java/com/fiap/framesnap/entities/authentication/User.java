@@ -8,6 +8,14 @@ public class User {
     private String password;
 
     public User(UUID id, String email, String password) {
+        if (email == null) {
+            throw new IllegalArgumentException("Email não pode ser nulo");
+        }
+
+        if (password == null) {
+            throw new IllegalArgumentException("Senha não pode ser nula");
+        }
+
         this.id = id;
         this.email = email;
         this.password = password;
@@ -21,7 +29,7 @@ public class User {
         return email;
     }
 
-    public String getPassword() {  // Adicionando o getter da senha
+    public String getPassword() {
         return password;
     }
 }

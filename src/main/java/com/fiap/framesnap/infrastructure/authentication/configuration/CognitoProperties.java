@@ -15,6 +15,15 @@ public class CognitoProperties {
     @Value("${aws.cognito.user-pool-id}")
     private String userPoolId;
 
+    @Value("${aws.cognito.access-key}")
+    private String accessKey;
+
+    @Value("${aws.cognito.secret-key}")
+    private String secretKey;
+
+    @Value("${aws.cognito.region}")
+    private String region;
+
     public String getClientId() {
         return clientId;
     }
@@ -25,5 +34,17 @@ public class CognitoProperties {
 
     public String getUserPoolId() {
         return userPoolId;
+    }
+
+    public String getAccessKey() {
+        return accessKey;
+    }
+
+    public String getSecretKey() {
+        return secretKey;
+    }
+
+    public String getRegion() {
+        return region;
     }
 }

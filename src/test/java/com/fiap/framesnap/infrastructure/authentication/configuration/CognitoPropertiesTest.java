@@ -53,4 +53,43 @@ class CognitoPropertiesTest {
         // Assert
         assertEquals(expectedUserPoolId, userPoolId);
     }
+
+    @Test
+    void shouldGetAccessKey() {
+        // Arrange
+        String expectedAccessKey = "test-access-key";
+        ReflectionTestUtils.setField(cognitoProperties, "accessKey", expectedAccessKey);
+
+        // Act
+        String accessKey = cognitoProperties.getAccessKey();
+
+        // Assert
+        assertEquals(expectedAccessKey, accessKey);
+    }
+
+    @Test
+    void shouldGetSecretKey() {
+        // Arrange
+        String expectedSecretKey = "test-secret-key";
+        ReflectionTestUtils.setField(cognitoProperties, "secretKey", expectedSecretKey);
+
+        // Act
+        String secretKey = cognitoProperties.getSecretKey();
+
+        // Assert
+        assertEquals(expectedSecretKey, secretKey);
+    }
+
+    @Test
+    void shouldGetRegion() {
+        // Arrange
+        String expectedRegion = "test-region";
+        ReflectionTestUtils.setField(cognitoProperties, "region", expectedRegion);
+
+        // Act
+        String region = cognitoProperties.getRegion();
+
+        // Assert
+        assertEquals(expectedRegion, region);
+    }
 } 

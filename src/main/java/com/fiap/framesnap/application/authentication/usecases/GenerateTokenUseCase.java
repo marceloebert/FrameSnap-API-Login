@@ -10,6 +10,14 @@ public class GenerateTokenUseCase {
     }
 
     public String execute(String email, String password) {
+        if (email == null || email.isEmpty()) {
+            throw new IllegalArgumentException("Email não pode ser nulo ou vazio");
+        }
+
+        if (password == null || password.isEmpty()) {
+            throw new IllegalArgumentException("Senha não pode ser nula ou vazia");
+        }
+
         return tokenGateway.generateToken(email, password);
     }
 }

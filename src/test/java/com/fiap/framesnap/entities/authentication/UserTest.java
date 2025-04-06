@@ -26,14 +26,31 @@ class UserTest {
     }
 
     @Test
-    void shouldHandleNullValues() {
+    void shouldHandleNullEmail() {
         // Arrange
         UUID id = UUID.randomUUID();
+        String password = "password123";
 
         // Act & Assert
-        assertThrows(NullPointerException.class, () -> {
-            new User(id, null, null);
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            new User(id, null, password);
         });
+
+        assertEquals("Email não pode ser nulo", exception.getMessage());
+    }
+
+    @Test
+    void shouldHandleNullPassword() {
+        // Arrange
+        UUID id = UUID.randomUUID();
+        String email = "test@example.com";
+
+        // Act & Assert
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            new User(id, email, null);
+        });
+
+        assertEquals("Senha não pode ser nula", exception.getMessage());
     }
 
     @Test

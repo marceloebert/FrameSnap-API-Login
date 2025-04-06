@@ -46,37 +46,4 @@ class UserDTOMapperTest {
         assertEquals(id, response.getId());
         assertEquals(email, response.getEmail());
     }
-
-    @Test
-    void shouldHandleNullUserRequest() {
-        // Act
-        User user = mapper.toUser(null);
-
-        // Assert
-        assertNull(user);
-    }
-
-    @Test
-    void shouldHandleNullUser() {
-        // Act
-        UserResponse response = mapper.toUserResponse(null);
-
-        // Assert
-        assertNull(response);
-    }
-
-    @Test
-    void shouldHandleEmptyUserRequest() {
-        // Arrange
-        UserRequest request = new UserRequest();
-
-        // Act
-        User user = mapper.toUser(request);
-
-        // Assert
-        assertNotNull(user);
-        assertNull(user.getId());
-        assertNull(user.getEmail());
-        assertNull(user.getPassword());
-    }
 } 

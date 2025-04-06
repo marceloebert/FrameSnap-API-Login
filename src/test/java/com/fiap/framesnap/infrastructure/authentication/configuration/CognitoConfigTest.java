@@ -4,9 +4,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.test.util.ReflectionTestUtils;
 import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 
 class CognitoConfigTest {
@@ -20,6 +21,10 @@ class CognitoConfigTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
         cognitoConfig = new CognitoConfig();
+        ReflectionTestUtils.setField(cognitoConfig, "accessKey", "test-access-key");
+        ReflectionTestUtils.setField(cognitoConfig, "secretKey", "test-secret-key");
+        ReflectionTestUtils.setField(cognitoConfig, "region", "us-east-1");
+        ReflectionTestUtils.setField(cognitoConfig, "sessionToken", "test-session-token");
     }
 
     @Test
@@ -29,33 +34,5 @@ class CognitoConfigTest {
 
         // Assert
         assertNotNull(client);
-    }
-
-    @Test
-    void shouldGetUserPoolId() {
-        // Arrange
-        String expectedUserPoolId = "test-user-pool-id";
-        when(cognitoProperties.getUserPoolId()).thenReturn(expectedUserPoolId);
-
-        // Act
-        String actualUserPoolId = cognitoConfig.getUserPoolId();
-
-        // Assert
-        assertNotNull(actualUserPoolId);
-        assertTrue(actualUserPoolId.length() > 0);
-    }
-
-    @Test
-    void shouldGetClientId() {
-        // Arrange
-        String expectedClientId = "test-client-id";
-        when(cognitoProperties.getClientId()).thenReturn(expectedClientId);
-
-        // Act
-        String actualClientId = cognitoConfig.getClientId();
-
-        // Assert
-        assertNotNull(actualClientId);
-        assertTrue(actualClientId.length() > 0);
     }
 } 

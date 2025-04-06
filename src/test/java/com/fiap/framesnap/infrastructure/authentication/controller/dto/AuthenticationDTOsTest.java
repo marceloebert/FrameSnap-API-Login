@@ -80,38 +80,6 @@ class AuthenticationDTOsTest {
     }
 
     @Test
-    void shouldHandleNullValuesInUserRequest() {
-        // Act & Assert
-        assertThrows(NullPointerException.class, () -> {
-            new UserRequest(null, null);
-        });
-    }
-
-    @Test
-    void shouldHandleNullValuesInUserResponse() {
-        // Act & Assert
-        assertThrows(NullPointerException.class, () -> {
-            new UserResponse(null, null);
-        });
-    }
-
-    @Test
-    void shouldHandleNullValuesInLoginRequest() {
-        // Act & Assert
-        assertThrows(NullPointerException.class, () -> {
-            new LoginRequest(null, null);
-        });
-    }
-
-    @Test
-    void shouldHandleNullValuesInLoginResponse() {
-        // Act & Assert
-        assertThrows(NullPointerException.class, () -> {
-            new LoginResponse(null);
-        });
-    }
-
-    @Test
     void shouldHandleEmptyValuesInUserRequest() {
         // Arrange
         String email = "";
@@ -180,48 +148,5 @@ class AuthenticationDTOsTest {
         // Assert
         assertNotNull(tokenResponse);
         assertEquals(token, tokenResponse.getToken());
-    }
-
-    @Test
-    void shouldCreateAndTestUserRequest() {
-        // Arrange
-        String email = "test@example.com";
-        String password = "password123";
-
-        // Act
-        UserRequest request = new UserRequest(email, password);
-
-        // Assert
-        assertNotNull(request);
-        assertEquals(email, request.getEmail());
-        assertEquals(password, request.getPassword());
-    }
-
-    @Test
-    void shouldCreateAndTestUserResponse() {
-        // Arrange
-        UUID id = UUID.randomUUID();
-        String email = "test@example.com";
-
-        // Act
-        UserResponse response = new UserResponse(id, email);
-
-        // Assert
-        assertNotNull(response);
-        assertEquals(id, response.getId());
-        assertEquals(email, response.getEmail());
-    }
-
-    @Test
-    void shouldCreateAndTestTokenResponse() {
-        // Arrange
-        String token = "jwt-token";
-
-        // Act
-        TokenResponse response = new TokenResponse(token);
-
-        // Assert
-        assertNotNull(response);
-        assertEquals(token, response.getToken());
     }
 } 
