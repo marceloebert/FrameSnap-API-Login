@@ -15,10 +15,10 @@ public class CognitoProperties {
     @Value("${aws.cognito.user-pool-id}")
     private String userPoolId;
 
-    @Value("${aws.cognito.access-key}")
+    @Value("${aws.credentials.access-key}")
     private String accessKey;
 
-    @Value("${aws.cognito.secret-key}")
+    @Value("${aws.credentials.secret-key}")
     private String secretKey;
 
     @Value("${aws.cognito.region}")
