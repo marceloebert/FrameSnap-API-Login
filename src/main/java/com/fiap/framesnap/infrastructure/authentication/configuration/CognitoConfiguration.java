@@ -6,15 +6,17 @@ import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient;
+import software.amazon.awssdk.auth.credentials.AwsSessionCredentials;
 
 @Configuration
 public class CognitoConfiguration {
 
     @Bean
     public CognitoIdentityProviderClient cognitoClient(CognitoProperties cognitoProperties) {
-        AwsBasicCredentials awsCredentials = AwsBasicCredentials.create(
+        AwsSessionCredentials awsCredentials = AwsSessionCredentials.create(
                 cognitoProperties.getAccessKey(),
-                cognitoProperties.getSecretKey()
+                cognitoProperties.getSecretKey(),
+                cognitoProperties.getSessionToken()
         );
 
         return CognitoIdentityProviderClient.builder()

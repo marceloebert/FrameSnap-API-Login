@@ -28,7 +28,7 @@ class PasswordEncoderTest {
         assertNotEquals(password, encodedPassword);
     }
 
-  
+
 
     @Test
     void shouldVerifyPassword() {

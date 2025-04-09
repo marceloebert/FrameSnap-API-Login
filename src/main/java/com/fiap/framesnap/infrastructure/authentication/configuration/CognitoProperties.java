@@ -21,6 +21,9 @@ public class CognitoProperties {
     @Value("${aws.credentials.secret-key}")
     private String secretKey;
 
+    @Value("${aws.credentials.session-token}")
+    private String sessionToken;
+
     @Value("${aws.cognito.region}")
     private String region;
 
@@ -42,6 +45,10 @@ public class CognitoProperties {
 
     public String getSecretKey() {
         return secretKey;
+    }
+
+    public String getSessionToken() {
+        return sessionToken;
     }
 
     public String getRegion() {
