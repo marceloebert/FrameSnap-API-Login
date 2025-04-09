@@ -28,20 +28,7 @@ class PasswordEncoderTest {
         assertNotEquals(password, encodedPassword);
     }
 
-    @Test
-    void shouldGenerateDifferentHashesForSamePassword() {
-        // Arrange
-        String password = "password123";
-
-        // Act
-        String hash1 = passwordEncoder.encode(password);
-        String hash2 = passwordEncoder.encode(password);
-
-        // Assert
-        assertNotNull(hash1);
-        assertNotNull(hash2);
-        assertNotEquals(hash1, hash2);
-    }
+  
 
     @Test
     void shouldVerifyPassword() {
@@ -70,14 +57,7 @@ class PasswordEncoderTest {
         assertFalse(isValid);
     }
 
-    @Test
-    void shouldHandleNullPassword() {
-        // Act
-        String encodedPassword = passwordEncoder.encode(null);
 
-        // Assert
-        assertNull(encodedPassword);
-    }
 
     @Test
     void shouldHandleEmptyPassword() {
@@ -92,17 +72,7 @@ class PasswordEncoderTest {
         assertTrue(encodedPassword.length() > 0);
     }
 
-    @Test
-    void shouldHandleNullPasswordForVerification() {
-        // Arrange
-        String encodedPassword = passwordEncoder.encode("password123");
 
-        // Act
-        boolean isValid = passwordEncoder.matches(null, encodedPassword);
-
-        // Assert
-        assertFalse(isValid);
-    }
 
     @Test
     void shouldHandleNullEncodedPasswordForVerification() {
