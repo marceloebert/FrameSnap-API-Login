@@ -1,144 +1,170 @@
-# FIAP - Arquitetura de Software -> Sistema de Pedido
+# FrameSnap-API-Login
 
 ## Descrição do Projeto
 
-Este projeto é um sistema de pedido desenvolvido em Java Spring Boot, que permite aos clientes fazerem pedidos personalizados, realizar pagamentos via QRCode do Mercado Pago, acompanhar o status do pedido e receber notificações quando o pedido estiver pronto. O sistema também inclui funcionalidades de gerenciamento de clientes, produtos e categorias, e um painel administrativo para acompanhamento de pedidos.
+FrameSnap-API-Login é um serviço de autenticação desenvolvido em Java Spring Boot que fornece funcionalidades de registro e login de usuários utilizando o Amazon Cognito como provedor de autenticação. Este serviço é parte do ecossistema FrameSnap, fornecendo autenticação segura para as aplicações do sistema.
 
-## Funcionalidades
+## Tecnologias Utilizadas
 
-### Pedido
-- **Identificação do Cliente**: Clientes podem se identificar via CPF, nome e e-mail, ou optar por não se identificar.
-- **Montagem de Combo**: Clientes podem montar seus combos selecionando:
-  - Lanche
-  - Acompanhamento
-  - Bebida
-  - Sobremesa
-- Cada etapa exibe o nome, descrição e preço dos produtos.
+- **Java 17**: Linguagem de programação principal
+- **Spring Boot 3.2.3**: Framework para desenvolvimento de aplicações Java
+- **Amazon Cognito**: Serviço de gerenciamento de usuários e autenticação
+- **AWS SDK v2**: Biblioteca para interação com serviços AWS
+- **Gradle**: Ferramenta de automação de build
+- **JUnit 5**: Framework para testes unitários
+- **Mockito**: Framework para criação de mocks em testes
+- **JaCoCo**: Ferramenta para cobertura de código
+- **SonarQube**: Plataforma para análise de qualidade de código
+- **Docker**: Containerização da aplicação
+- **Kubernetes**: Orquestração de containers
 
-### Pagamento
-- **QRCode Mercado Pago**: Opção de pagamento integrada usando QRCode.
+## Arquitetura
 
-### Acompanhamento
-- **Status do Pedido**: Monitoramento em tempo real das etapas do pedido:
-  - Recebido
-  - Em preparação
-  - Pronto
-  - Finalizado
+O projeto segue os princípios da Clean Architecture, com as seguintes camadas:
 
-### Entrega
-- **Notificação**: Notificação ao cliente quando o pedido estiver pronto para retirada.
+- **Entities**: Contém as entidades de domínio (User)
+- **Application**: Contém os casos de uso da aplicação (LoginUseCase, RegisterUserUseCase)
+- **Infrastructure**: Implementações concretas dos gateways e configurações (CognitoUserGateway, TokenGatewayImpl)
+- **Crosscutting**: Utilitários e componentes transversais
 
-### Gerenciamento
-- **Clientes**: Identificação para campanhas promocionais.
-- **Produtos e Categorias**: Gestão de produtos com nome, categoria, preço, descrição e imagens.
-- **Pedidos**: Acompanhamento de pedidos em andamento e tempo de espera.
+## Endpoints da API
 
-## Entregáveis da 2ª Fase
+### Registro de Usuário
 
-1. **Arquitetura Kubernates**
-    - Escalabilidade com aumento e diminuição de Pods conforme demanda.
-    - Disponibilizar Banco de Dados em uma pod
-    - Configuração da API no EKS rodando com toda estrutura:
-         - Deployment
-         - Replicaset
-         - Services
-         - Pod
-         - HPA
-           
-![Arquitetura Kubernates](k8s/arquitetura/Desenho-arquitetura-k8s.png)
+```
+POST /auth/register
+```
 
-- Link do video com a demonstração da arquitetura K8s rodando no EKS: https://youtu.be/U7E9I8mxCUY
+**Descrição**: Registra um novo usuário no sistema.
 
-2. **Aplicação Backend**
-    - Refatoração Clean Architecture
-    - APIs:
-        - Checkout Pedido que deverá receber os produtos solicitados e retornar a identificação do pedido.
-        - Consultar status pagamento pedido, que informa se o pagamento foi aprovado ou não.
-        - Webhook para receber confirmação de pagamento aprovado ou recusado.
-        - A lista de pedidos deverá retorná-los com suas descrições, ordenados com a seguinte regra:
-          - Pronto > Em Preparação > Recebido;
-          - Pedidos mais antigos primeiro e mais novos depois;
-          - Pedidos com status Finalizado não devem aparecer na lista.
-      - Atualizar o status do pedido.      
-    
-3. **Manual de utilização das APIs**
-    - importar no postman collection disponibilizada na raiz do projeto com nome de "FastFood.postman_collection.json"
-     [Baixar Collection FastFood-App](FastFood.postman_collection.json)
-    - 1 - Executar rota "Create Custumer"
-    - 2 - Executar rota "Create Product"
-    - 3 - Executar rota "Create Order" informando o document do custumer criado e o id do product criado
-    - 4 - Executar "Webhook payments" simulado para fazer pagamento do QRCODE informando o id do pagamento gerado na criação do pedido
-    - 5 - Executar "Change Order Status" para alterar o status do pedido 
+**Corpo da Requisição**:
+```json
+{
+  "email": "usuario@exemplo.com",
+  "password": "senha123"
+}
+```
 
-## Entregáveis da 1ª Fase
+**Resposta de Sucesso (200 OK)**:
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "email": "usuario@exemplo.com"
+}
+```
 
-1. **Documentação do Sistema (DDD)**
-   - Event Storming com todos os passos e tipos de diagrama.
-   - Fluxos:
-     - Realização do pedido e pagamento
-     - Preparação e entrega do pedido
+**Erros Possíveis**:
+- **400 Bad Request**: Email ou senha inválidos
+- **409 Conflict**: Usuário já existe
 
-2. **Aplicação Backend (Monolito)**
-   - Arquitetura hexagonal
-   - APIs:
-     - Cadastro do Cliente
-     - Identificação do Cliente via CPF
-     - Criação, edição e remoção de produtos
-     - Busca de produtos por categoria
-     - Fake checkout (envio dos produtos escolhidos para a fila)
-     - Listar pedidos
-     - Swagger para consumo da API
-   - Banco de dados à escolha:
-     - Organização da fila de pedidos no banco de dados
+### Login
 
-3. **Configuração Docker**
-   - Dockerfile configurado
-   - docker-compose.yml para subir o ambiente completo
+```
+POST /auth/login
+```
 
-## Configuração e Execução
+**Descrição**: Autentica um usuário e retorna um token JWT.
 
-### Pré-requisitos
-- Docker
-- Docker Compose
+**Corpo da Requisição**:
+```json
+{
+  "email": "usuario@exemplo.com",
+  "password": "senha123"
+}
+```
 
-### Passos para Execução
+**Resposta de Sucesso (200 OK)**:
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+**Erros Possíveis**:
+- **400 Bad Request**: Email ou senha inválidos
+- **401 Unauthorized**: Credenciais inválidas
+- **404 Not Found**: Usuário não encontrado
+
+## Configuração
+
+### Variáveis de Ambiente
+
+O projeto requer as seguintes variáveis de ambiente:
+
+```
+# AWS Cognito
+aws.cognito.user-pool-id=seu-user-pool-id
+aws.cognito.client-id=seu-client-id
+aws.cognito.client-secret=seu-client-secret
+aws.cognito.region=sua-regiao
+
+# AWS Credentials
+aws.credentials.access-key=sua-access-key
+aws.credentials.secret-key=sua-secret-key
+aws.credentials.session-token=seu-session-token
+```
+
+### Executando Localmente
 
 1. Clone o repositório:
    ```bash
-   git clone https://github.com/marceloebert/fiap-software-architecture-fastfood.git
-   cd lanchonete
+   git clone https://github.com/seu-usuario/FrameSnap-API-Login.git
+   cd FrameSnap-API-Login
+   ```
 
-3. Suba o ambiente:
-    docker-compose up --build
+2. Configure as variáveis de ambiente necessárias
 
-### Acesso ao Swagger
+3. Execute o projeto:
+   ```bash
+   ./gradlew bootRun
+   ```
 
-Para acessar a documentação Swagger da API, utilize o seguinte endpoint:
-http://localhost:8080/swagger-ui.html
-    
-### Infraestrutura para POC
+### Executando com Docker
 
-- 1 instância para banco de dados
-- 1 instância para executar a aplicação
+1. Construa a imagem:
+   ```bash
+   docker build -t framesnap-api-login .
+   ```
 
-### Tecnologias Utilizadas
+2. Execute o container:
+   ```bash
+   docker run -p 8080:8080 \
+     -e aws.cognito.user-pool-id=seu-user-pool-id \
+     -e aws.cognito.client-id=seu-client-id \
+     -e aws.cognito.client-secret=seu-client-secret \
+     -e aws.cognito.region=sua-regiao \
+     -e aws.credentials.access-key=sua-access-key \
+     -e aws.credentials.secret-key=sua-secret-key \
+     -e aws.credentials.session-token=seu-session-token \
+     framesnap-api-login
+   ```
 
-- Java Spring Boot
-- Banco de dados MYSQL
-- Docker
-- Docker Compose
-- Swagger
+## Testes
 
-### Documentação complementar do projeto
+### Executando Testes
 
-- https://miro.com/app/board/uXjVKgPn08g=/?share_link_id=309607043599
+```bash
+./gradlew test
+```
 
-### Licença
+### Relatório de Cobertura
 
+Após executar os testes, o relatório de cobertura estará disponível em:
+```
+build/reports/jacoco/test/html/index.html
+```
 
+## Qualidade de Código
 
+O projeto utiliza SonarQube para análise de qualidade de código. Para executar a análise:
 
+```bash
+./gradlew sonarqube
+```
 
+## Segurança
 
-
-
+- Todas as senhas são armazenadas de forma segura no Amazon Cognito
+- A comunicação com o Cognito é feita via HTTPS
+- Tokens JWT são utilizados para autenticação
+- Validações são realizadas para evitar injeção de código e outros ataques comuns
